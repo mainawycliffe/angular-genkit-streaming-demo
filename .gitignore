@@ -40,3 +40,11 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+.genkit/servers/tools-13911.json
+.genkit/traces/0da272699b183666a8ef507c09303875
+.genkit/traces/8bd6c97a6f2b5ad9742fcb213635e45a
+.genkit/traces/85d4657e3fbbc825978cc85bf3ed18b7
+.genkit/traces/86def6336cf7231c48134544c3f215ce
+.genkit/traces/f497656e42b42872c78c40e380fe200b
+.genkit/traces_idx/genkit.metadata
+.genkit/traces_idx/idx_00001750975891689.json
