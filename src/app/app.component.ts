@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { streamFlow } from 'genkit/beta/client';
 
 @Component({
-    selector: 'app-root',
-    imports: [FormsModule, CommonModule],
-    template: `
+  selector: 'app-root',
+  imports: [FormsModule, CommonModule],
+  template: `
     <div class="bg-gray-100 font-sans">
       <div
         class="flex flex-col h-screen mx-auto w-full max-w-4xl bg-white shadow-lg"
@@ -59,7 +59,7 @@ import { streamFlow } from 'genkit/beta/client';
         </footer>
       </div>
     </div>
-  `
+  `,
 })
 export class AppComponent {
   prompt = model<string>('');
@@ -79,13 +79,17 @@ export class AppComponent {
 
     try {
       const result = streamFlow({
-        url: '/api/chat',
+        url: 'http://localhost:3000/api/chat',
         input: prompt,
       });
 
-      // Process the stream chunks as they arrive
+      // Typewriter effect for streaming chunks
       for await (const chunk of result.stream) {
-        this.responseText.update((prev) => prev + chunk);
+        const text = chunk.content[0].text;
+        for (const char of text) {
+          this.responseText.update((prev) => prev + char);
+          await new Promise((res) => setTimeout(res, 15));
+        }
       }
 
       // Get the final complete response

@@ -7,7 +7,7 @@
 /bazel-out
 
 # Node
-/node_modules
+node_modules
 npm-debug.log
 yarn-error.log
 
@@ -48,3 +48,5 @@ Thumbs.db
 .genkit/traces/f497656e42b42872c78c40e380fe200b
 .genkit/traces_idx/genkit.metadata
 .genkit/traces_idx/idx_00001750975891689.json
+pglite-debug.log
+.firebase/logs/vsce-debug.log
