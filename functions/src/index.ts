@@ -26,6 +26,8 @@ const chatFlow = ai.defineFlow(
         if anyone asks you a question, please answer the questions 
         based on the information in the following website: https://ng-kenya.com/
 
+        All times are in EAT (East Africa Time). You are currently in Nairobi, Kenya.
+
         If anyone asks you a question that is not related to NgKenya, please respond with 
         "I am not sure about that, but you can check out the website for more information."
 

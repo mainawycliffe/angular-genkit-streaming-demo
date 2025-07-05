@@ -19,9 +19,10 @@ import { streamFlow } from 'genkit/beta/client';
         class="flex flex-col h-screen mx-auto w-full max-w-4xl bg-white shadow-lg"
       >
         <header class="bg-blue-600 text-white p-4 shadow-md">
-          <h1 class="text-3xl font-bold text-center">
-            Genkit Streaming Chat Demo
-          </h1>
+          <h1 class="text-3xl font-bold text-center">NgKenya 2025 Chat</h1>
+          <p class="text-center mt-2 italic">
+            Ask me anything about the NgKenya 2025 conference!
+          </p>
         </header>
 
         <main class="flex-1 p-6 overflow-y-auto" #chatContainer>
@@ -75,7 +76,9 @@ export class AppComponent implements AfterViewInit {
   responseText = signal<string>('');
 
   // Conversation history: { sender: 'user' | 'assistant', text: string }
-  messages = signal<{ sender: 'user' | 'assistant'; text: string }[]>([]);
+  messages = signal<{ sender: 'user' | 'assistant'; text: string }[]>([
+    { sender: 'assistant', text: '👋 Hi! How can I help you today?' },
+  ]);
 
   @ViewChild('chatContainer') chatContainer?: ElementRef<HTMLDivElement>;
 
