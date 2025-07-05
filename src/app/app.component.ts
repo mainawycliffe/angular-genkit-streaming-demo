@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, model, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  model,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { streamFlow } from 'genkit/beta/client';
 
@@ -17,22 +24,23 @@ import { streamFlow } from 'genkit/beta/client';
           </h1>
         </header>
 
-        <main class="flex-1 p-6 overflow-y-auto">
+        <main class="flex-1 p-6 overflow-y-auto" #chatContainer>
           <div class="flex flex-col space-y-4">
-            @if (prompt()) {
-            <div class="flex justify-end">
+            @for (message of messages(); track message) {
+            <div
+              class="flex"
+              [class.justify-end]="message.sender === 'user'"
+              [class.justify-start]="message.sender !== 'user'"
+            >
               <div
-                class="bg-blue-500 text-white p-4 rounded-2xl max-w-lg shadow"
+                [ngClass]="
+                  message.sender === 'user'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-800'
+                "
+                class="p-4 rounded-2xl max-w-lg shadow whitespace-pre-line"
               >
-                <p>{{ prompt() }}</p>
-              </div>
-            </div>
-            } @if (responseText()) {
-            <div class="flex justify-start">
-              <div
-                class="bg-gray-200 text-gray-800 p-4 rounded-2xl max-w-lg shadow"
-              >
-                <p class="whitespace-pre-line">{{ responseText() }}</p>
+                <p>{{ message.text || 'Thinking ...' }}</p>
               </div>
             </div>
             }
@@ -61,21 +69,50 @@ import { streamFlow } from 'genkit/beta/client';
     </div>
   `,
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   prompt = model<string>('');
-
   isStreaming = signal(false);
-
   responseText = signal<string>('');
 
+  // Conversation history: { sender: 'user' | 'assistant', text: string }
+  messages = signal<{ sender: 'user' | 'assistant'; text: string }[]>([]);
+
+  @ViewChild('chatContainer') chatContainer?: ElementRef<HTMLDivElement>;
+
+  ngAfterViewInit() {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom() {
+    queueMicrotask(() => {
+      if (this.chatContainer) {
+        this.chatContainer.nativeElement.scrollTop =
+          this.chatContainer.nativeElement.scrollHeight;
+      }
+    });
+  }
+
   async send() {
+    this.scrollToBottom();
+
     const prompt = this.prompt();
+    this.prompt.set(''); // Clear input after sending
     if (!prompt) {
       return;
     }
 
+    // Add user message to history
+    this.messages.update((msgs) => [...msgs, { sender: 'user', text: prompt }]);
     this.isStreaming.set(true);
     this.responseText.set('');
+
+    let assistantMsg = '';
+    // Add placeholder for assistant message
+    this.messages.update((msgs) => [
+      ...msgs,
+      { sender: 'assistant', text: '' },
+    ]);
+    this.scrollToBottom();
 
     try {
       const result = streamFlow({
@@ -87,7 +124,17 @@ export class AppComponent {
       for await (const chunk of result.stream) {
         const text = chunk.content[0].text;
         for (const char of text) {
-          this.responseText.update((prev) => prev + char);
+          assistantMsg += char;
+          // Update last assistant message in history
+          this.messages.update((msgs) => {
+            const updated = [...msgs];
+            updated[updated.length - 1] = {
+              sender: 'assistant',
+              text: assistantMsg,
+            };
+            return updated;
+          });
+          this.scrollToBottom();
           await new Promise((res) => setTimeout(res, 15));
         }
       }
@@ -100,5 +147,6 @@ export class AppComponent {
     } finally {
       this.isStreaming.set(false);
     }
+    this.prompt.set('');
   }
 }
