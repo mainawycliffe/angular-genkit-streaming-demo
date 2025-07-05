@@ -14,6 +14,40 @@ import { streamFlow } from 'genkit/beta/client';
   selector: 'app-root',
   imports: [FormsModule, CommonModule],
   template: `
+    <style>
+      .typing-indicator {
+        display: flex;
+        align-items: center;
+        height: 1.5rem;
+      }
+      .typing-dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        margin: 0 0.1rem;
+        background: #a0aec0;
+        border-radius: 50%;
+        display: inline-block;
+        animation: bounce 1.4s infinite both;
+      }
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes bounce {
+        0%,
+        80%,
+        100% {
+          transform: scale(0.8);
+          opacity: 0.7;
+        }
+        40% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+      }
+    </style>
     <div class="bg-gray-100 font-sans">
       <div
         class="flex flex-col h-screen mx-auto w-full max-w-4xl bg-white shadow-lg"
@@ -41,7 +75,15 @@ import { streamFlow } from 'genkit/beta/client';
                 "
                 class="p-4 rounded-2xl max-w-lg shadow whitespace-pre-line"
               >
-                <p>{{ message.text || 'Thinking ...' }}</p>
+                @if (message.sender === 'assistant' && !message.text) {
+                <span class="typing-indicator">
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+                </span>
+                } @else {
+                <p>{{ message.text }}</p>
+                }
               </div>
             </div>
             }

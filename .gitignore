@@ -50,3 +50,4 @@ Thumbs.db
 .genkit/traces_idx/idx_00001750975891689.json
 pglite-debug.log
 .firebase/logs/vsce-debug.log
+firebase-debug.log

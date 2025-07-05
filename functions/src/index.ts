@@ -3,6 +3,7 @@ import {} from 'firebase-functions';
 import { onCallGenkit } from 'firebase-functions/https';
 import { defineSecret } from 'firebase-functions/params';
 import { genkit, z } from 'genkit';
+import { DateTime } from 'luxon';
 
 const geminiKey = defineSecret('GEMINI_API_KEY');
 
@@ -18,6 +19,8 @@ const chatFlow = ai.defineFlow(
     outputSchema: z.string(),
   },
   async (prompt, ctx) => {
+    const timeNow = DateTime.now().setZone('Africa/Nairobi').toISO();
+
     const { stream, response } = ai.generateStream({
       prompt: `You are a useful AI Assitant, for NgKenya (2025) - You answer question based on the days agenda.
 
@@ -27,6 +30,8 @@ const chatFlow = ai.defineFlow(
         based on the information in the following website: https://ng-kenya.com/
 
         All times are in EAT (East Africa Time). You are currently in Nairobi, Kenya.
+
+        The current time is ${timeNow}.
 
         If anyone asks you a question that is not related to NgKenya, please respond with 
         "I am not sure about that, but you can check out the website for more information."
