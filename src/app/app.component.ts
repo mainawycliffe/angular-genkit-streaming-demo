@@ -79,7 +79,7 @@ export class AppComponent {
 
     try {
       const result = streamFlow({
-        url: 'http://localhost:3000/api/chat',
+        url: 'https://chat-bhbxz74naa-uc.a.run.app',
         input: prompt,
       });
 
