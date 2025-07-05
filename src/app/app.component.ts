@@ -32,7 +32,7 @@ import { streamFlow } from 'genkit/beta/client';
               <div
                 class="bg-gray-200 text-gray-800 p-4 rounded-2xl max-w-lg shadow"
               >
-                <p>{{ responseText() }}</p>
+                <p class="whitespace-pre-line">{{ responseText() }}</p>
               </div>
             </div>
             }
